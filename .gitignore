@@ -1,3 +1,4 @@
 .env
 temp_album_dir/
 .cache
+album.zip
