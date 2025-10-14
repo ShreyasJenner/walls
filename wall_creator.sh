@@ -1,40 +1,36 @@
 #!/bin/bash
 
-input_folder="temp_album_dir"
-output_folder="output_images"
+src_folder="input_images"
+output_folder="output_wallpapers"
+
 mkdir -p "$output_folder"
 
-# Initialize counter
-counter=0
-
-for img in "$input_folder"/*.{jpg,jpeg,png}; do
-  # Skip if no files match
-  [[ -e "$img" ]] || continue
-
-  # Increment counter
-  ((count++))
+for img in "$src_folder"/*.{jpg,jpeg,png,bmp,gif}; do
+  [ -e "$img" ] || continue
 
   filename=$(basename "$img")
-  name="${filename%.*}"
 
-  echo "Walling ${name} (${count}/${total})"
+  # Step 3: Resize to 1179x2556
+  magick "$img" -resize 1179x2556\! resized.png
 
-  # resize original to 1179x2556
-  magick "$img" -resize 1179x2556\! "$output_folder/${name}_resized.png"
+  # Step 4: Create black image of 1179x1179
+  magick -size 1179x1179 canvas:"#000000" black.png
 
-  # Apply strong gaussian blur (approx 86% intensity visually)
-  # Gaussian blur radius and sigma can be tuned; here radius=0 (auto), sigma=20 for strong blur
-  magick "$output_folder/${name}_resized.png" -blur 0x40 "$output_folder/${name}_blurred.png"
+  # Step 5: Overlay black image onto resized image (black overlays top-left corner)
+  magick resized.png black.png -gravity center -composite step5.png
 
-  # Resize original to 1179x1179
-  magick "$img" -resize 1179x1179\! "$output_folder/${name}_small.png"
+  # Step 6: Apply 86% Gaussian blur (approximate radius)
+  magick step5.png -blur 0x120 step6.png
 
-  # Overlay small resized image onto blurred image (centered)
-  # Using -gravity center to position overlay and composite
-  magick "$output_folder/${name}_blurred.png" \
-    "$output_folder/${name}_small.png" -gravity center -composite \
-    -quality 90 "$output_folder/${name}.jpg"
+  # Step 7: Resize original image to 1179x1179
+  magick "$img" -resize 1179x1179\! resized_square.png
 
-  # Cleanup intermediate images
-  rm "$output_folder/${name}_resized.png" "$output_folder/${name}_blurred.png" "$output_folder/${name}_small.png"
+  # Step 8: Overlay resized square image to center of blurred image
+  magick step6.png resized_square.png -gravity center -composite step8.png
+
+  # Step 9: Save final image to output folder
+  mv step8.png "$output_folder/$filename"
+
+  # Step 10: Delete intermediate images
+  rm resized.png black.png step5.png step6.png resized_square.png
 done
