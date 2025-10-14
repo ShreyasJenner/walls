@@ -1,6 +1,7 @@
 #!/bin/bash
 
-src_folder="temp_album_dir"
+#src_folder="temp_album_dir"
+src_folder="sep_images"
 output_folder="output_wallpapers"
 mkdir -p "$output_folder"
 

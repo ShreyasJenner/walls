@@ -1,8 +1,15 @@
-.env
-temp_album_dir/
-output_wallpapers/
+# intermediate images
 black.png
 resized.png
 step5.png
-.cache
+
+# zip files 
 album*.zip
+
+# environment files
+.env
+.cache
+
+# folders
+output_wallpapers/
+source_images/
