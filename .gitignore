@@ -1,4 +1,8 @@
 .env
 temp_album_dir/
+output_wallpapers/
+black.png
+resized.png
+step5.png
 .cache
 album.zip
