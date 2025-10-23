@@ -1,7 +1,12 @@
 #!/bin/bash
 
-#src_folder="temp_album_dir"
-src_folder="sep_images"
+# Bash file that converts album images to wallpapers that
+# fit iphone 14 pro res
+# It also applies a blur to the images so that a better wallpaper
+# image is obtained
+
+src_folder="source_images"
+#src_folder="sep_images"
 output_folder="output_wallpapers"
 mkdir -p "$output_folder"
 
@@ -52,7 +57,7 @@ for img in "$src_folder"/*.{jpg,jpeg,png,bmp,gif}; do
     magick "$tmp_dir/resized.png" "$tmp_dir/black.png" -gravity center -composite "$tmp_dir/step5.png"
 
     # Step 6: Apply 86% Gaussian blur approx radius inside tmp_dir
-    magick "$tmp_dir/step5.png" -blur 0x110 "$tmp_dir/step6.png"
+    magick "$tmp_dir/step5.png" -blur 0x150 "$tmp_dir/step6.png"
 
     # Step 7: Resize original image to 1176x1176 inside tmp_dir
     magick "$img" -resize 1176x1176\! "$tmp_dir/resized_square.png"
