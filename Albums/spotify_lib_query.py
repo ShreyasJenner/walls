@@ -7,7 +7,7 @@ from spotipy.oauth2 import SpotifyOAuth
 load_dotenv()
 
 scope = "user-library-read"
-download_folder = "temp_album_dir"
+download_folder = "source_images"
 os.makedirs(download_folder, exist_ok=True)
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))

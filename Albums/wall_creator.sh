@@ -38,12 +38,20 @@ processed=0
 for img in "$src_folder"/*.{jpg,jpeg,png,bmp,gif}; do
   [ -e "$img" ] || continue
 
+  filename=$(basename "$img")
+  output_file="$output_folder/$filename"
+
+  # Skip processing if output file already exists
+  if [ -f "$output_file" ]; then
+    echo "Skipping existing image: $filename"
+    continue
+  fi
+
   wait_for_jobs # wait if necessary to not exceed max_jobs
 
   (
     # Create a unique temporary working directory for this thread
     tmp_dir=$(mktemp -d)
-    filename=$(basename "$img")
 
     echo "Processing: $filename"
 
